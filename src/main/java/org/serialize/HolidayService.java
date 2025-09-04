@@ -17,13 +17,24 @@ public record HolidayService(NagerApiClient apiClient, Clock clock) {
     public List<Holiday> getLast3Holidays(String countryCode) throws Exception {
         int currentYear = LocalDate.now(clock).getYear();
         var holidays = apiClient.getPublicHolidays(currentYear, countryCode);
-
         var today = LocalDate.now(clock);
-        return holidays.stream()
-                .filter(h -> LocalDate.parse(h.getDate()).isBefore(today))
-                .sorted((h1, h2) -> LocalDate.parse(h2.getDate()).compareTo(LocalDate.parse(h1.getDate())))
-                .limit(3)
-                .collect(Collectors.toList());
+
+        PriorityQueue<Holiday> pq = new PriorityQueue<>(3,
+                Comparator.comparing(h -> LocalDate.parse(h.getDate())));
+        for (Holiday h : holidays) {
+            LocalDate date = LocalDate.parse(h.getDate());
+            if (date.isBefore(today)) {
+                pq.offer(h);
+                if (pq.size() > 3) {
+                    pq.poll();
+                }
+            }
+        }
+        List<Holiday> result = new ArrayList<>();
+        while (!pq.isEmpty()) {
+            result.add(pq.poll());
+        }
+        return result.reversed();
     }
 
     public Map<String, Long> countWeekdayHolidays(int year, List<String> countryCodes) throws Exception {

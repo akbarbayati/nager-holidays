@@ -92,4 +92,21 @@ public class HolidayServiceTest {
         assertEquals(1, common.size());
         assertTrue(common.getFirst().getLocalName().contains("Christmas"));
     }
+
+    @Test
+    void performanceTest_getLast3Holidays_handlesLargeHolidayListEfficiently() throws Exception {
+        int year = LocalDate.now().getYear();
+        List<Holiday> holidays = new java.util.ArrayList<>();
+        for (int i = 1; i <= 10000; i++) {
+            holidays.add(holiday(year + "-01-" + String.format("%02d", (i % 28) + 1), "Holiday" + i, "Holiday" + i));
+        }
+        when(apiClient.getPublicHolidays(eq(year), eq("US"))).thenReturn(holidays);
+
+        long start = System.nanoTime();
+        List<Holiday> result = service.getLast3Holidays("US");
+        long durationMs = (System.nanoTime() - start) / 1_000_000;
+
+        assertEquals(3, result.size());
+        assertTrue(durationMs < 200, "Performance test failed: took " + durationMs + "ms");
+    }
 }

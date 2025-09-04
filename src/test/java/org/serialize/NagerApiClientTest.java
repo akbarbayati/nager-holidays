@@ -59,7 +59,7 @@ public class NagerApiClientTest {
         List<Holiday> result = service.getLast3Holidays("US");
 
         assertEquals(1, result.size());
-        assertEquals("New Year", result.get(0).getLocalName());
+        assertEquals("New Year", result.getFirst().getLocalName());
     }
 
     private Holiday holiday(String date, String localName, String name) {
