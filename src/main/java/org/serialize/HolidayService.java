@@ -57,7 +57,7 @@ public record HolidayService(NagerApiClient apiClient, Clock clock) {
         Map<String, Long> sortedResult = result.entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-                        (a, _) -> a, LinkedHashMap::new));
+                        (a, b) -> a, LinkedHashMap::new));
         log.debug("Sorted weekday holidays count: {}", sortedResult);
         return sortedResult;
     }
@@ -68,7 +68,7 @@ public record HolidayService(NagerApiClient apiClient, Clock clock) {
         List<Holiday> secondHolidays = apiClient.getPublicHolidays(year, secondCountry);
 
         Map<String, Holiday> firstCountryHolidaysByDate = firstHolidays.stream()
-                .collect(Collectors.toMap(Holiday::getDate, h -> h, (a, _) -> a));
+                .collect(Collectors.toMap(Holiday::getDate, h -> h, (a, b) -> a));
 
         List<Holiday> common = secondHolidays.stream()
                 .filter(h -> firstCountryHolidaysByDate.containsKey(h.getDate()))
