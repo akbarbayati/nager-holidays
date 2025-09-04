@@ -37,7 +37,7 @@ public class HolidayServiceTest {
     }
 
     @Test
-    void testGetLast3Holidays() throws Exception {
+    void getLast3Holidays_returnsMostRecent3Holidays_whenCalledWithValidCountry() throws Exception {
         int year = LocalDate.now().getYear();
         List<Holiday> holidays = Arrays.asList(
                 holiday(year + "-01-01", "New Year", "New Year's Day"),
@@ -54,7 +54,7 @@ public class HolidayServiceTest {
     }
 
     @Test
-    void testCountWeekdayHolidays() throws Exception {
+    void countWeekdayHolidays_returnsCorrectCounts_whenGivenMultipleCountries() throws Exception {
         List<Holiday> usHolidays = Arrays.asList(
                 holiday("2024-01-01", "New Year", "New Year's Day"), // Monday
                 holiday("2024-01-06", "WeekendHoliday", "WeekendHoliday") // Saturday
@@ -74,7 +74,7 @@ public class HolidayServiceTest {
     }
 
     @Test
-    void testGetCommonHolidays() throws Exception {
+    void getCommonHolidays_returnsCommonHolidays_whenCountriesShareDates() throws Exception {
         List<Holiday> usHolidays = Arrays.asList(
                 holiday("2024-07-04", "Independence Day", "Independence Day"),
                 holiday("2024-12-25", "Christmas Day", "Christmas")
